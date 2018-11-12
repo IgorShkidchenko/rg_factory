@@ -46,11 +46,18 @@ class Factory
       end
 
       def values_at *index
-        instance_variables.values_at(*index).map { |values| instance_variable_get values }
+        to_a.values_at *index
       end
 
       def to_a
-        instance_variables.map { |variable| instance_variable_get variable }
+        to_h.values
+      end
+
+      def to_h
+        pair = instance_variables.map do |variable|
+          [variable.slice(1, variable.size).to_sym, instance_variable_get(variable)]
+        end
+        pair.to_h
       end
 
       def size
@@ -58,18 +65,15 @@ class Factory
       end
 
       def members
-        instance_variables.map { |variable| variable.to_s.slice(1, variable.size).to_sym }
+        to_h.keys
       end
 
       def each_pair &method
-        pair = instance_variables.map do |variable|
-          [variable.slice(1, variable.size), instance_variable_get(variable)]
-        end
-        pair.to_h.each_pair &method
+        to_h.each_pair &method
       end
 
       def dig *path
-        
+        to_h.dig *path
       end
       
       class_eval &method if block_given?
