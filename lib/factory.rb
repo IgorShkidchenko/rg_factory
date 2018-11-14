@@ -1,6 +1,6 @@
 class Factory
   def self.new *arg_from_fact, &method
-    Class.new do
+    new_class = Class.new do
       define_method :initialize do |*arg_from_new_class|
         raise ArgumentError, 'Extra args passed' unless arg_from_fact.count == arg_from_new_class.count
         zipped = arg_from_fact.zip(arg_from_new_class)
@@ -29,10 +29,9 @@ class Factory
       def == other
         i = 0
         variables_value = -> (i, who = self) { who.instance_variable_get(instance_variables[i]) }
-        loop do
+        instance_variables.size.times do 
           return false unless variables_value.call(i) == variables_value.call(i, other)
           i += 1
-          break if i == instance_variables.size
         end
         true
       end
@@ -80,5 +79,7 @@ class Factory
       alias_method :length, :size
       alias_method :eql?, :==
     end
+    const_set(arg_from_fact.shift.capitalize, new_class) if arg_from_fact.first.is_a? String
+    new_class
   end
 end
