@@ -6,7 +6,7 @@ class Factory
         raise ArgumentError, 'Extra args passed' unless arg_from_fact.count == arg_from_new_class.count
         zipped = arg_from_fact.zip(arg_from_new_class)
         zipped.each { |variable, value| instance_variable_set("@#{variable}", value) }
-        arg_from_fact.each { |variable| self.class.send(:attr_accessor, variable) }
+        arg_from_fact.each { |variable| self.class.public_send(:attr_accessor, variable) }
       end
 
       def []= variable, value
