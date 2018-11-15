@@ -1,5 +1,6 @@
 class Factory
-  def self.new *arg_from_fact, &method
+  class << self
+  def new *arg_from_fact, &method
     new_class = Class.new do
       define_method :initialize do |*arg_from_new_class|
         raise ArgumentError, 'Extra args passed' unless arg_from_fact.count == arg_from_new_class.count
@@ -82,4 +83,5 @@ class Factory
     const_set(arg_from_fact.shift.capitalize, new_class) if arg_from_fact.first.is_a? String
     new_class
   end
+end
 end
