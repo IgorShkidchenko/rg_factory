@@ -10,7 +10,7 @@ class Factory
         attr_accessor *arg_from_fact
 
         define_method :initialize do |*arg_from_new_class|
-          raise ArgumentError, 'Extra args passed' unless arg_from_fact.count == arg_from_new_class.count
+          raise ArgumentError, 'Extra args passed' if !(arg_from_fact.count == arg_from_new_class.count)
           arg_from_fact.zip(arg_from_new_class).each { |variable, value| instance_variable_set("@#{variable}", value) }
         end
 
