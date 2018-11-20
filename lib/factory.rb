@@ -57,7 +57,7 @@ class Factory
         end
 
         def dig *path
-          path.inject(self) { |key, value| key[value].nil? ? (return nil) : key[value] }
+          path.inject(to_h) { |key, value| key[value] if key[value] }
         end
 
         define_method :to_h do
