@@ -56,27 +56,8 @@ class Factory
           to_h.each_pair &method
         end
 
-        def dig key, *path
-          value = self[key]
-          return value if path.length == 0 || value.nil?
-          return hash_dig(value, path) if value.is_a? Hash
-          return arr_dig(value, path) if value.is_a? Array
-          value.dig *path
-        end
-      
-        def hash_dig(value, path)
-          return value if path.length == 0 || value.nil?
-          return arr_dig(value, path) if value.is_a? Array
-          path.shift
-          hash_dig value.values[0], path
-        end
-
-        def arr_dig value, path
-          return value if path.size == 0 || value.nil?
-          return hash_dig(value, path) if value.is_a? Hash
-          next_value = value[path.first]
-          path.shift
-          arr_dig next_value, path
+        def dig *path
+          path.inject(self) { |key, value| key[value].nil? ? (return nil) : key[value] }
         end
 
         define_method :to_h do
